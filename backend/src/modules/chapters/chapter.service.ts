@@ -8,7 +8,6 @@ export const addChapter = async (
   imageUrl?: string,
   videoUrl?: string
 ) => {
-  // Verify mentor owns the course
   const { data: course } = await supabase
     .from("courses")
     .select("id")
