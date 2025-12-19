@@ -11,7 +11,7 @@ app.get("/health", (_req, res) => {
   res.json({ status: "OK" });
 });
 
-// future routes go here
+
 app.use(errorHandler);
 
 export default app;
