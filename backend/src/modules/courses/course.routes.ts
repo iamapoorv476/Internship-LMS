@@ -6,14 +6,33 @@ import {
   listMentorCourses,
   assignCourse
 } from "./course.controller";
+import { addChapterHandler } from "../chapters/chapter.controller";
+import { asyncHandler } from "../../utils/asyncHandler";
 
 const router = Router();
-
 router.use(authenticate);
-router.use(authorize(["mentor"]));
+router.post(
+  "/",
+  authorize(["mentor"]),
+  asyncHandler(createCourseHandler)
+);
 
-router.post("/", createCourseHandler);
-router.get("/my", listMentorCourses);
-router.post("/:id/assign", assignCourse);
+router.get(
+  "/my",
+  authorize(["mentor"]),
+  asyncHandler(listMentorCourses)
+);
+
+router.post(
+  "/:id/assign",
+  authorize(["mentor"]),
+  asyncHandler(assignCourse)
+);
+
+router.post(
+  "/:courseId/chapters",
+  authorize(["mentor"]),
+  asyncHandler(addChapterHandler)
+);
 
 export default router;

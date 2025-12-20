@@ -41,7 +41,6 @@ export const assignCourseToStudents = async (
   courseId: string,
   studentIds: string[]
 ) => {
-  // Ensure mentor owns the course
   const { data: course } = await supabase
     .from("courses")
     .select("id")

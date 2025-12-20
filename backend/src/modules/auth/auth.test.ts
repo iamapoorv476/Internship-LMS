@@ -2,6 +2,9 @@ import request from "supertest";
 import app from "../../app";
 import { supabase } from "../../config/supabase";
 
+const uniqueEmail = (prefix: string) =>
+  `${prefix}-${Date.now()}@test.com`;
+
 describe("Auth Module", () => {
   const studentEmail = "student@test.com";
   const password = "password123";
@@ -30,7 +33,7 @@ describe("Auth Module", () => {
 
   it("should not login unapproved mentor", async () => {
     await supabase.from("users").insert({
-      email: "mentor@test.com",
+     email: uniqueEmail("mentor"),
       password_hash: "dummy",
       role: "mentor",
       is_approved: false

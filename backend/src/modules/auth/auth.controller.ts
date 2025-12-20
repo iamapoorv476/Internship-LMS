@@ -1,18 +1,37 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { registerStudent, loginUser } from "./auth.service";
 
-export const register = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+export const register = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { email, password } = req.body;
 
-  await registerStudent(email, password);
+    await registerStudent(email, password);
 
-  res.status(201).json({ message: "Student registered successfully" });
+    return res
+      .status(201)
+      .json({ message: "Student registered successfully" });
+  } catch (err) {
+    return next(err);
+  }
 };
 
-export const login = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+export const login = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { email, password } = req.body;
 
-  const token = await loginUser(email, password);
+    const token = await loginUser(email, password);
 
-  res.status(200).json({ token });
+    return res.status(200).json({ token });
+  } catch (err) {
+    return next(err);
+  }
 };
+

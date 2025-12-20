@@ -1,27 +1,37 @@
-import {Request,Response,NextFunction} from "express";
-import { verifyToken,JwtPayload } from "../config/jwt";
+import { Request, Response, NextFunction } from "express";
+import { verifyToken, JwtPayload } from "../config/jwt";
 
 export interface AuthRequest extends Request {
-    user?: JwtPayload;
+  user?: {
+    id: string;
+    role: "student" | "mentor" | "admin";
+  };
 }
-export const authenticate =(
-    req:AuthRequest,
-    _res:Response,
-    next:NextFunction
-) =>{
-    const authHeader = req.headers.authorization;
 
-    if (!authHeader || !authHeader.startsWith("Bearer")){
-        throw {statusCode:401, message:"Authentication token missing"};
-    }
+export const authenticate = (
+  req: AuthRequest,
+  _res: Response,
+  next: NextFunction
+) => {
+  const authHeader = req.headers.authorization;
 
-    const token = authHeader.split(" ")[1];
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    throw { statusCode: 401, message: "Authentication token missing" };
+  }
 
-    try{
-        const payload =verifyToken(token);
-        req.user = payload;
-        next();
-    } catch{
-        throw {statusCode:401,message:"Invalid or expired token"};
-    }
-}
+  const token = authHeader.split(" ")[1];
+
+  try {
+    const payload = verifyToken(token) as JwtPayload;
+    req.user = {
+      id: payload.userId,
+      role: payload.role
+    };
+    console.log("AUTH USER =>", req.user);
+
+
+    next();
+  } catch {
+    throw { statusCode: 401, message: "Invalid or expired token" };
+  }
+};

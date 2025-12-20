@@ -1,22 +1,27 @@
-import { Response } from "express";
+import { Response, NextFunction } from "express";
 import { AuthRequest } from "../../middlewares/auth.middleware";
 import { addChapter } from "./chapter.service";
 
 export const addChapterHandler = async (
   req: AuthRequest,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
-  const { id } = req.params;
-  const { title, description, imageUrl, videoUrl } = req.body;
+  try {
+    const { courseId } = req.params;
+    const { title, description, imageUrl, videoUrl } = req.body;
 
-  const chapter = await addChapter(
-    req.user!.userId,
-    id,
-    title,
-    description,
-    imageUrl,
-    videoUrl
-  );
+    const chapter = await addChapter(
+      req.user!.id,       
+      courseId,           
+      title,
+      description,
+      imageUrl,
+      videoUrl
+    );
 
-  res.status(201).json(chapter);
+    res.status(201).json(chapter);
+  } catch (err) {
+    next(err);
+  }
 };

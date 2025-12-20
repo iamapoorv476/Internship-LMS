@@ -18,8 +18,6 @@ export const addChapter = async (
   if (!course) {
     throw { statusCode: 403, message: "Not your course" };
   }
-
-  // Determine next sequence number
   const { data: lastChapter } = await supabase
     .from("chapters")
     .select("sequence_order")
@@ -48,6 +46,5 @@ export const addChapter = async (
   if (error) {
     throw { statusCode: 400, message: error.message };
   }
-
   return data;
 };

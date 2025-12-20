@@ -13,7 +13,7 @@ export const createCourseHandler = async (
   const { title, description } = req.body;
 
   const course = await createCourse(
-    req.user!.userId,
+    req.user!.id,    
     title,
     description
   );
@@ -25,7 +25,7 @@ export const listMentorCourses = async (
   req: AuthRequest,
   res: Response
 ) => {
-  const courses = await getMentorCourses(req.user!.userId);
+  const courses = await getMentorCourses(req.user!.id);
   res.status(200).json(courses);
 };
 
@@ -36,7 +36,7 @@ export const assignCourse = async (
   const { id } = req.params;
   const { studentIds } = req.body;
 
-  await assignCourseToStudents(req.user!.userId, id, studentIds);
+  await assignCourseToStudents(req.user!.id,     id, studentIds);
 
   res.status(200).json({ message: "Course assigned successfully" });
 };

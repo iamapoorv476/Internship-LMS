@@ -1,21 +1,26 @@
-import { Response } from "express";
+import { Response, NextFunction } from "express";
 import { AuthRequest } from "../../middlewares/auth.middleware";
 import { generateCertificate } from "./certificate.service";
 
 export const getCertificate = async (
-    req: AuthRequest,
-    res:Response
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
 ) => {
+  try {
     const pdfBuffer = await generateCertificate(
-        req.user!.userId,
-        req.params.courseId
+      req.user!.id,
+      req.params.courseId
     );
-    res.setHeader("Content-Type","application/pdf");
+
+    res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
-        "Content-Disposition",
-        "attachment; filename=certificate.pdf"
+      "Content-Disposition",
+      "attachment; filename=certificate.pdf"
     );
-    res.send(pdfBuffer);
 
-
-}
+    return res.send(pdfBuffer);
+  } catch (err) {
+    return next(err);
+  }
+};

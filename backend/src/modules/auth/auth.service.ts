@@ -13,28 +13,42 @@ export const registerStudent = async (email: string, password: string) => {
   });
 
   if (error) {
-    throw { statusCode: 400, message: error.message };
+    throw {
+      statusCode: 400,
+      message: error.message
+    };
   }
+
+  return true;
 };
 
 export const loginUser = async (email: string, password: string) => {
-  const { data: user } = await supabase
+  const { data: user, error } = await supabase
     .from("users")
     .select("*")
     .eq("email", email)
     .single();
 
-  if (!user) {
-    throw { statusCode: 401, message: "Invalid credentials" };
+  if (error || !user) {
+    throw {
+      statusCode: 401,
+      message: "Invalid credentials"
+    };
   }
 
   if (user.role === "mentor" && !user.is_approved) {
-    throw { statusCode: 403, message: "Mentor not approved" };
+    throw {
+      statusCode: 403,
+      message: "Mentor not approved"
+    };
   }
 
   const valid = await comparePassword(password, user.password_hash);
   if (!valid) {
-    throw { statusCode: 401, message: "Invalid credentials" };
+    throw {
+      statusCode: 401,
+      message: "Invalid credentials"
+    };
   }
 
   const token = signToken({

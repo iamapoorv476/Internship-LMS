@@ -3,6 +3,9 @@ import app from "../../app";
 import { supabase } from "../../config/supabase";
 import { signToken } from "../../config/jwt";
 
+const uniqueEmail = (prefix: string) =>
+  `${prefix}-${Date.now()}@test.com`;
+
 describe("Certificate Generation", () => {
   let token: string;
   let courseId: string;
@@ -12,7 +15,7 @@ describe("Certificate Generation", () => {
     const { data: student } = await supabase
       .from("users")
       .insert({
-        email: "cert@test.com",
+       email: uniqueEmail("certificate"),
         password_hash: "hashed",
         role: "student",
         is_approved: true
@@ -41,5 +44,6 @@ describe("Certificate Generation", () => {
       .set("Authorization", `Bearer ${token}`);
 
     expect(res.status).toBe(403);
+    expect(res.body.message).toBe("Course not assigned");
   });
 });

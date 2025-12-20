@@ -10,12 +10,12 @@ export const generateCertificatePDF =(
     doc.on("data", buffers.push.bind(buffers));
     doc.on("end",()=> {});
 
-    doc.fontsize(26).text("Course Completion Certificate",{
+    doc.fontSize(26).text("Course Completion Certificate",{
         align: "center"
     })
 
-    doc.movedown(2);
-    doc.fontsize(16).text(
+    doc.moveDown(2);
+    doc.fontSize(16).text(
         `This certifies that ${studentEmail}`,
     { align: "center" }
     );
@@ -26,7 +26,7 @@ export const generateCertificatePDF =(
     );
 
     doc.moveDown(2);
-    doc.fontsize(18).text(courseTitle,{align:"center"});
+    doc.fontSize(18).text(courseTitle,{align:"center"});
      doc.moveDown(2);
   doc.fontSize(12).text(
     `Issued on: ${new Date().toDateString()}`,
