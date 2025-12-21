@@ -15,13 +15,38 @@ import { errorHandler } from "./middlewares/error.middleware";
 
 const app = express();
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:3000",
+  "https://internship-lms-9ty1.vercel.app",
+  // Add all your Vercel preview URLs pattern
+  /https:\/\/.*\.vercel\.app$/
+];
+
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "https://internship-lms-9ty1.vercel.app"
-    ],
-    credentials: true
+    origin: (origin, callback) => {
+      // Allow requests with no origin (mobile apps, curl, etc.)
+      if (!origin) return callback(null, true);
+      
+      // Check if origin matches any allowed origin
+      const isAllowed = allowedOrigins.some(allowed => {
+        if (allowed instanceof RegExp) {
+          return allowed.test(origin);
+        }
+        return allowed === origin;
+      });
+      
+      if (isAllowed) {
+        callback(null, true);
+      } else {
+        console.log('❌ CORS blocked origin:', origin);
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
   })
 );
 app.use(express.json());
