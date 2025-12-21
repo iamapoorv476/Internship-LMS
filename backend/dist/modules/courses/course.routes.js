@@ -1,0 +1,15 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const auth_middleware_1 = require("../../middlewares/auth.middleware");
+const role_middleware_1 = require("../../middlewares/role.middleware");
+const course_controller_1 = require("./course.controller");
+const chapter_controller_1 = require("../chapters/chapter.controller");
+const asyncHandler_1 = require("../../utils/asyncHandler");
+const router = (0, express_1.Router)();
+router.use(auth_middleware_1.authenticate);
+router.post("/", (0, role_middleware_1.authorize)(["mentor"]), (0, asyncHandler_1.asyncHandler)(course_controller_1.createCourseHandler));
+router.get("/my", (0, role_middleware_1.authorize)(["mentor"]), (0, asyncHandler_1.asyncHandler)(course_controller_1.listMentorCourses));
+router.post("/:id/assign", (0, role_middleware_1.authorize)(["mentor"]), (0, asyncHandler_1.asyncHandler)(course_controller_1.assignCourse));
+router.post("/:courseId/chapters", (0, role_middleware_1.authorize)(["mentor"]), (0, asyncHandler_1.asyncHandler)(chapter_controller_1.addChapterHandler));
+exports.default = router;

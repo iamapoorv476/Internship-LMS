@@ -1,37 +1,53 @@
 import { Request, Response, NextFunction } from "express";
-import { verifyToken, JwtPayload } from "../config/jwt";
+import jwt from "jsonwebtoken";
+import { supabase } from "../config/supabase";
+
+const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 
 export interface AuthRequest extends Request {
   user?: {
     id: string;
-    role: "student" | "mentor" | "admin";
+    email: string;
+    role: string;
+    mentor_requested?: boolean;
   };
 }
 
-export const authenticate = (
+export const authenticate = async (
   req: AuthRequest,
-  _res: Response,
+  res: Response,
   next: NextFunction
 ) => {
-  const authHeader = req.headers.authorization;
-
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    throw { statusCode: 401, message: "Authentication token missing" };
-  }
-
-  const token = authHeader.split(" ")[1];
-
   try {
-    const payload = verifyToken(token) as JwtPayload;
-    req.user = {
-      id: payload.userId,
-      role: payload.role
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({ message: "No token provided" });
+    }
+
+    const token = authHeader.split(" ")[1];
+    const decoded = jwt.verify(token, JWT_SECRET) as {
+      userId: string;
+      role: string;
     };
-    console.log("AUTH USER =>", req.user);
 
+    const { data: user, error } = await supabase
+      .from("users")
+      .select("id, email, role, mentor_requested")
+      .eq("id", decoded.userId)
+      .single();
 
+    if (error || !user) {
+      return res.status(401).json({ message: "Invalid token" });
+    }
+    req.user = {
+      id: user.id,
+      email: user.email,
+      role: user.role, 
+      mentor_requested: user.mentor_requested || false,
+    };
     next();
-  } catch {
-    throw { statusCode: 401, message: "Invalid or expired token" };
+  } catch (err) {
+    return res.status(401).json({ message: "Invalid or expired token" });
   }
 };

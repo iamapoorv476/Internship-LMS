@@ -3,8 +3,8 @@ import Login from "../auth/Login";
 import Register from "../auth/Register";
 
 import RequireAuth from "../auth/RequireAuth";
-
-
+import AdminDashboard from "../admin/AdminDashboard";
+import StudentLayout from "../student/StudentLayout";
 import MentorLayout from "../mentor/MentorLayout";
 import MentorDashboard from "../mentor/MentorDashboard";
 import MyCourses from "../mentor/MyCourses";
@@ -40,12 +40,22 @@ export default function AppRoutes() {
         path="/student"
         element={
           <RequireAuth role="student">
-            <StudentDashboard />
+            <StudentLayout />
           </RequireAuth>
         }
       >
+        <Route index element={<StudentDashboard />} />
         <Route path="course/:courseId" element={<StudentCourse />} />
       </Route>
+      <Route
+        path="/admin"
+        element={
+          <RequireAuth role="admin">
+            <AdminDashboard />
+          </RequireAuth>
+        }
+      />
+      
       <Route path="*" element={<Navigate to="/login" />} />
     </Routes>
   );

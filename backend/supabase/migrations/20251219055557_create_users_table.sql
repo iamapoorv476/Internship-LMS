@@ -11,3 +11,5 @@ create table if not exists public.users (
 );
 
 create index if not exists idx_users_email on public.users(email);
+
+

@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { registerStudent, loginUser } from "./auth.service";
+import { AuthRequest } from "../../middlewares/auth.middleware";
 
 export const register = async (
   req: Request,
@@ -8,14 +9,13 @@ export const register = async (
 ) => {
   try {
     const { email, password } = req.body;
-
     await registerStudent(email, password);
 
-    return res
-      .status(201)
-      .json({ message: "Student registered successfully" });
+    res.status(201).json({
+      message: "Student registered successfully",
+    });
   } catch (err) {
-    return next(err);
+    next(err);
   }
 };
 
@@ -26,12 +26,19 @@ export const login = async (
 ) => {
   try {
     const { email, password } = req.body;
-
     const token = await loginUser(email, password);
 
-    return res.status(200).json({ token });
+    res.status(200).json({ token });
   } catch (err) {
-    return next(err);
+    next(err);
   }
 };
 
+export const me = async (req: AuthRequest, res: Response) => {
+  res.status(200).json({
+    id: req.user!.id,
+    email: req.user!.email,
+    role: req.user!.role,
+    mentor_requested: req.user!.mentor_requested,
+  });
+};

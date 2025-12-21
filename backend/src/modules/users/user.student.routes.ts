@@ -4,15 +4,24 @@ import { authorize } from "../../middlewares/role.middleware";
 import { asyncHandler } from "../../utils/asyncHandler";
 import {
   getMyCourses,
-  getCourseChapters
+  getCourseChapters,
+  getAllStudents ,
+  requestMentor 
 } from "./user.controller";
 
 const router = Router();
 
 router.use(authenticate);
-router.use(authorize(["student"]));
+router.get("/students", authorize(["mentor"]), asyncHandler(getAllStudents));
+router.post(
+  "/request-mentor",
+  authenticate,
+  authorize(["student"]),
+  requestMentor
+);
 
-router.get("/my-courses", asyncHandler(getMyCourses));
-router.get("/course/:courseId", asyncHandler(getCourseChapters));
+
+router.get("/my-courses", authorize(["student"]), asyncHandler(getMyCourses));
+router.get("/course/:courseId", authorize(["student"]), asyncHandler(getCourseChapters));
 
 export default router;
