@@ -1,14 +1,11 @@
 import axios from "axios";
 
 // ============================================================================
-// IMPORTANT: Your backend is confirmed working at the URL below
-// We checked /health and got {"status":"OK"}
+// YOUR ACTUAL RENDER URL (from your deployment logs)
 // ============================================================================
-
-// STEP 1: Replace this with YOUR actual Render URL (without /api)
 const RENDER_BACKEND_URL = "https://internship-lms-5fqf.onrender.com";
 
-// STEP 2: This automatically detects if you're on Vercel or localhost
+// Detect if running on Vercel (production) or localhost (development)
 const isProduction = 
   window.location.hostname.includes('vercel.app') || 
   window.location.hostname !== 'localhost';

@@ -19,7 +19,7 @@ const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:3000",
   "https://internship-lms-zfj5.vercel.app",
-  // Add all your Vercel preview URLs pattern
+  /https:\/\/.*-.*\.vercel\.app$/,  // Updated regex to match preview deployments
   /https:\/\/.*\.vercel\.app$/
 ];
 
@@ -38,6 +38,7 @@ app.use(
       });
       
       if (isAllowed) {
+        console.log('✅ CORS allowed origin:', origin);
         callback(null, true);
       } else {
         console.log('❌ CORS blocked origin:', origin);
@@ -49,38 +50,27 @@ app.use(
     allowedHeaders: ['Content-Type', 'Authorization']
   })
 );
+
 app.use(express.json());
 
 app.get("/health", (_req, res) => {
-  res.status(200).json({ status: "OK" });
+  res.status(200).json({ 
+    status: "OK",
+    timestamp: new Date().toISOString()
+  });
 });
 
 app.use("/api/auth", authRoutes);
-
 app.use("/api/admin/users", adminUserRoutes);
 app.use("/api/users", studentUserRoutes);
-
-
 app.use("/api/courses", authenticate, courseRoutes);
-
 app.use("/api/progress", authenticate, progressRoutes);
-
-app.use(
-  "/api/certificates",
-  authenticate,
-  authorize(["student"]),
-  certificateRoutes
-);
+app.use("/api/certificates", authenticate, authorize(["student"]), certificateRoutes);
 
 if (process.env.NODE_ENV === "test") {
-  app.get(
-    "/api/protected",
-    authenticate,
-    authorize(["admin"]),
-    (_req, res) => {
-      res.status(200).json({ ok: true });
-    }
-  );
+  app.get("/api/protected", authenticate, authorize(["admin"]), (_req, res) => {
+    res.status(200).json({ ok: true });
+  });
 }
 
 app.use(errorHandler);
