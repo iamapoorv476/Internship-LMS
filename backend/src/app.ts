@@ -19,7 +19,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://internship-lms-rpwo.vercel.app"
+      "https://internship-lms-klht.vercel.app"
     ],
     credentials: true
   })
