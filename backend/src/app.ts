@@ -18,7 +18,7 @@ const app = express();
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:3000",
-  "https://internship-lms-zfj5.vercel.app",
+  "https://internship-lms-phi.vercel.app",
   /https:\/\/.*-.*\.vercel\.app$/,  // Updated regex to match preview deployments
   /https:\/\/.*\.vercel\.app$/
 ];
