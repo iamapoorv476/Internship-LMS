@@ -18,7 +18,7 @@ const app = express();
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:3000",
-  "https://internship-lms-r4lt.vercel.app/",
+  "https://internship-lms-nmw3.vercel.app",
   // Add all your Vercel preview URLs pattern
   /https:\/\/.*\.vercel\.app$/
 ];
