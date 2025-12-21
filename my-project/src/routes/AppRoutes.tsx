@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import Login from "../auth/Login";
+import Login from "../auth/login";
 import Register from "../auth/Register";
 
 import RequireAuth from "../auth/RequireAuth";
@@ -11,7 +11,6 @@ import MyCourses from "../mentor/MyCourses";
 import CreateCourse from "../mentor/CreateCourse";
 import AddChapter from "../mentor/AddChapter";
 import AssignCourse from "../mentor/AssignCourse";
-
 
 import StudentDashboard from "../student/StudentDashboard";
 import StudentCourse from "../student/StudentCourse";
@@ -25,7 +24,7 @@ export default function AppRoutes() {
       <Route
         path="/mentor"
         element={
-          <RequireAuth role="mentor">
+          <RequireAuth allowedRoles={["mentor"]}>
             <MentorLayout />
           </RequireAuth>
         }
@@ -39,7 +38,7 @@ export default function AppRoutes() {
       <Route
         path="/student"
         element={
-          <RequireAuth role="student">
+          <RequireAuth allowedRoles={["student"]}>
             <StudentLayout />
           </RequireAuth>
         }
@@ -50,7 +49,7 @@ export default function AppRoutes() {
       <Route
         path="/admin"
         element={
-          <RequireAuth role="admin">
+          <RequireAuth allowedRoles={["admin"]}>
             <AdminDashboard />
           </RequireAuth>
         }
